@@ -7,8 +7,10 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
+use Filament\Models\Contracts\HasAvatar;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -23,7 +25,19 @@ class User extends Authenticatable
         'email',
         'username',
         'password',
+        'avatar_url',
+        'email_verified_at',
     ];
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
+        return $this->$avatarColumn ? Storage::url($this->$avatarColumn) : null;
+        // If the avatar_url is already a full URL, return it directly
+        if ($this->$avatarColumn && filter_var($this->$avatarColumn, FILTER_VALIDATE_URL)) {
+            return $this->$avatarColumn;
+        }
+    }
 
     /**
      * The attributes that should be hidden for serialization.

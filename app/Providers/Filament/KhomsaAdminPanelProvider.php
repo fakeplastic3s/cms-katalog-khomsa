@@ -6,7 +6,11 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use Filament\Navigation\MenuItem;
+use App\Filament\Auth\CustomLogin;
 use Filament\Support\Colors\Color;
+use App\Livewire\CustomProfileComponent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -17,8 +21,10 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
-use App\Filament\Auth\CustomLogin;
+
 
 class KhomsaAdminPanelProvider extends PanelProvider
 {
@@ -70,7 +76,45 @@ class KhomsaAdminPanelProvider extends PanelProvider
             ->font('Poppins')
 
             // Plugins
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-        ;
+            ->plugins([
+                FilamentSpatieRolesPermissionsPlugin::make(),
+                FilamentEditProfilePlugin::make()
+                    ->slug('my-profile')
+                    ->setTitle('My Profile')
+                    ->setNavigationLabel('My Profile')
+                    ->setNavigationGroup('Profile')
+                    ->setIcon('heroicon-o-user')
+                    // ->setSort(10)
+                    // // ->canAccess(fn() => auth()->user()->id === 1)
+                    // ->shouldRegisterNavigation(false)
+                    // ->shouldShowEmailForm()
+                    ->shouldShowDeleteAccountForm(false)
+                    // ->shouldShowSanctumTokens()
+                    // ->shouldShowBrowserSessionsForm()
+                    ->shouldShowAvatarForm()
+
+
+            ])
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle')
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog-6-tooth'),
+                NavigationGroup::make()
+                    ->label('Profile')
+                    ->collapsed(false),
+                // NavigationGroup::make()
+                //     ->label('Blog')
+                //     ->icon('heroicon-o-pencil'),
+                // NavigationGroup::make()
+                //     ->label(fn(): string => __('navigation.settings'))
+                //     ->icon('heroicon-o-cog-6-tooth')
+                //     ->collapsed(),
+            ]);;
     }
 }
