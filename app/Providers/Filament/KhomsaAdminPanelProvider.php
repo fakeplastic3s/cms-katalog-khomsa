@@ -2,22 +2,23 @@
 
 namespace App\Providers\Filament;
 
-use App\Filamet\Auth\CustomLogin;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
+use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Auth\CustomLogin;
 
 class KhomsaAdminPanelProvider extends PanelProvider
 {
@@ -61,12 +62,15 @@ class KhomsaAdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->brandLogo(asset('img/logo.png'))
-            ->brandLogoHeight('3rem')
-            ->favicon(asset('img/favicon.jpg'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('img/favicon.png'))
             ->brandName('Khomsa Admin Panel')
             ->spa()
             ->sidebarCollapsibleOnDesktop()
             ->font('Poppins')
+
+            // Plugins
+            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
         ;
     }
 }
